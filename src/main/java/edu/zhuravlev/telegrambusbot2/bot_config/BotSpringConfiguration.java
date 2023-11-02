@@ -1,7 +1,7 @@
 package edu.zhuravlev.telegrambusbot2.bot_config;
 
 
-import edu.zhuravlev.telegrambusbot2.update_processing.UpdateListener;
+import edu.zhuravlev.telegrambusbot2.update_processing.UpdateDispatcher;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
@@ -21,14 +21,14 @@ public class BotSpringConfiguration {
     @Autowired
     private BotConfigurationProperties botProperties;
     @Autowired
-    private UpdateListener updateListener;
+    private UpdateDispatcher updateDispatcher;
 
     @Bean
     public TelegramLongPollingBot busBot() {
         TelegramLongPollingBot configurableBot = new TelegramLongPollingBot(botProperties.getToken()) {
             @Override
             public void onUpdateReceived(Update update) {
-                updateListener.process(update);
+                updateDispatcher.dispatch(update);
             }
 
             @Override
