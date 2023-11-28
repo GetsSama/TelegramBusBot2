@@ -1,29 +1,43 @@
 package edu.zhuravlev.telegrambusbot2.update_processing.events;
 
-import edu.zhuravlev.telegrambusbot2.TestClass;
-import edu.zhuravlev.telegrambusbot2.services.send.Sender;
+import edu.zhuravlev.telegrambusbot2.model.TelegramUser;
+import edu.zhuravlev.telegrambusbot2.services.mapper.UserMapper;
+import edu.zhuravlev.telegrambusbot2.services.send.SendService;
+import edu.zhuravlev.telegrambusbot2.services.user.TelegramUserService;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.User;
 
 
 @Slf4j
 @Component("/start")
 @RequiredArgsConstructor
 public class StartEvent implements BotCommandEvent {
-    private final Sender sender;
-    private final TestClass testClass;
-    private int counter;
+    private final SendService sendService;
+    private final TelegramUserService userService;
+    private final UserMapper userMapper;
+
+    private String message;
+
+    @PostConstruct
+    private void prepareMessage() {
+        message = "Это бот для отслеживания автобусов.\nВот список моих комманд:";
+    }
+
     @Override
     public void process(Update update) {
-        sender.sendText(update.getMessage().getChatId().toString(), "Start command");
+        User user = update.getMessage().getFrom();
+        String chatId = update.getMessage().getChatId().toString();
 
-        switch (counter) {
-            case 0 -> testClass.save();
-            case 1 -> testClass.delete();
+        if(userService.getTelegramUserById(user.getId().toString()).isEmpty()) {
+            TelegramUser newUser = userMapper.telegramUserFromUser(user);
+
+            newUser.setChatId(chatId);
+            userService.saveTelegramUser(newUser);
+            sendService.sendText(chatId, message);
         }
-
-        counter++;
     }
 }

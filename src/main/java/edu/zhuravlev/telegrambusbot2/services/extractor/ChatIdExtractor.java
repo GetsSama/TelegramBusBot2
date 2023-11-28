@@ -1,13 +1,13 @@
-package edu.zhuravlev.telegrambusbot2.services;
+package edu.zhuravlev.telegrambusbot2.services.extractor;
 
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class ChatIdExtractor {
-    public static String getChatId(Update update) {
+
+@Service
+public class ChatIdExtractor implements IdExtractor {
+    public String getId(Update update) {
         if (update.hasMessage()) {
             return update.getMessage().getChatId().toString();
         }

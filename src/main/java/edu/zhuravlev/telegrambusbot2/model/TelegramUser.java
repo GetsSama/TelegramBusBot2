@@ -2,6 +2,7 @@ package edu.zhuravlev.telegrambusbot2.model;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.util.Set;
@@ -10,8 +11,11 @@ import java.util.Set;
 @Data
 public class TelegramUser {
     @Id
+    @NotNull
     private String id;
+    @NotNull
     private String name;
+    @NotNull
     private String chatId;
 
     @ManyToMany(cascade = CascadeType.MERGE)
