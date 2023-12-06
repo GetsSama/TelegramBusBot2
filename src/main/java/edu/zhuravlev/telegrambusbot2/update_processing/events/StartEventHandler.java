@@ -1,5 +1,7 @@
 package edu.zhuravlev.telegrambusbot2.update_processing.events;
 
+import edu.zhuravlev.telegrambusbot2.annotation.TelegramBotCommand;
+import edu.zhuravlev.telegrambusbot2.common.BotCommandEventHandler;
 import edu.zhuravlev.telegrambusbot2.model.TelegramUser;
 import edu.zhuravlev.telegrambusbot2.services.mapper.UserMapper;
 import edu.zhuravlev.telegrambusbot2.services.send.SendService;
@@ -7,19 +9,17 @@ import edu.zhuravlev.telegrambusbot2.services.user.TelegramUserService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 
 
 @Slf4j
-@Component("/start")
 @RequiredArgsConstructor
-public class StartEvent implements BotCommandEvent {
+@TelegramBotCommand(commandName = "/start", commandDescription = "Стартовая команда бота")
+public class StartEventHandler implements BotCommandEventHandler {
     private final SendService sendService;
     private final TelegramUserService userService;
     private final UserMapper userMapper;
-
     private String message;
 
     @PostConstruct
